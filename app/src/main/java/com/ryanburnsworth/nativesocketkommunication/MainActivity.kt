@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private external fun init(hostname: String, port: Int): Int
-    private external fun sendData(sock: Int, data: String): Int
+    private external fun sendData(sock: Int, data: String)
     private external fun recvData(sock: Int): String
     private external fun disconnect(sock: Int)
 
@@ -21,26 +21,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        completeConnection()
     }
 
-    override fun onResume() {
-        super.onResume()
-        GlobalScope.launch {
+    private fun completeConnection() {
+        // run the remote TCP/IP calls on an IO thread
+        GlobalScope.launch(Dispatchers.IO) {
             var incomingData = ""
 
+            // change to your remote server IP and port
             sock = init("10.0.0.14", 9090)
 
+            // send a hello to the remote server
             sendData(sock, "Hello Server!")
 
+            // listen for incoming data
             while (incomingData == "") {
                 incomingData = recvData(sock)
                 Log.e("DATA", "Incoming: $incomingData")
             }
 
+            // disconnect from the remote server
             disconnect(sock)
         }
     }
 
+    // load the native library on initialization of this class
     companion object {
         init {
             System.loadLibrary("native-lib")

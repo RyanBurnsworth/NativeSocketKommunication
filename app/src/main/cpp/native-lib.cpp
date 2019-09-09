@@ -2,6 +2,12 @@
 #include <string>
 #include "klient.h"
 
+/**
+ *
+ * @param env - reference to the JNI environment
+ * @param jStr - incoming jstring
+ * @return - outputs a proper C++ string
+ */
 std::string jstring2string(JNIEnv *env, jstring jStr) {
     if (!jStr)
         return "";
@@ -23,6 +29,15 @@ std::string jstring2string(JNIEnv *env, jstring jStr) {
 }
 
 extern "C" {
+
+/**
+ *
+ * @param env - reference to the JNI environment
+ * @param instance - reference to *this* Java object
+ * @param hostname - the IP address of the remote server
+ * @param port  - the port to connect to on the remote server
+ * @return  - returns a socket to be stored and used or -1 for error
+ */
 JNIEXPORT jint JNICALL
 Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_init(
         JNIEnv *env,
@@ -34,7 +49,14 @@ Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_init(
     return k.connectToServer(hname, (int) port);
 }
 
-JNIEXPORT jint JNICALL
+/**
+ *
+ * @param env - reference to the JNI environment
+ * @param instance - reference to *this* Java object
+ * @param sock - active socket to send data through
+ * @param data - data to be sent to the remote server
+ */
+JNIEXPORT void JNICALL
 Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_sendData(
         JNIEnv *env,
         jobject instance,
@@ -43,19 +65,30 @@ Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_sendData(
     klient k;
     string sData = jstring2string(env, data);
     k.sendData((int) sock, sData);
-    return 1;
 }
 
-JNIEXPORT jint JNICALL
+/**
+ *
+ * @param env - reference to the JNI environment
+ * @param instance - reference to *this* Java object
+ * @param sock - active socket to disconnect
+ */
+JNIEXPORT void JNICALL
 Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_disconnect(
         JNIEnv *env,
         jobject instance,
         jint sock) {
     klient k;
     k.disconnectFromServer((int) sock);
-    return 1;
 }
 
+/**
+ *
+ * @param env - reference to the JNI environment
+ * @param instance - reference to *this* Java object
+ * @param sock - active socket to listen for incoming data from
+ * @return - returns incoming data from remote server
+*/
 JNIEXPORT jstring JNICALL
 Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_recvData(
         JNIEnv *env,
