@@ -10,10 +10,10 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    external fun init(hostname: String, port: Int): Int
-    external fun sendData(sock: Int, data: String): Int
-    external fun recvData(sock: Int): String
-    external fun disconnect(sock: Int)
+    private external fun init(hostname: String, port: Int): Int
+    private external fun sendData(sock: Int, data: String): Int
+    private external fun recvData(sock: Int): String
+    private external fun disconnect(sock: Int)
 
     private var sock = 0
 

@@ -52,7 +52,7 @@ Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_disconnect(
         jobject instance,
         jint sock) {
     klient k;
-    k.disconnectFromServer(sock);
+    k.disconnectFromServer((int) sock);
     return 1;
 }
 
@@ -62,7 +62,7 @@ Java_com_ryanburnsworth_nativesocketkommunication_MainActivity_recvData(
         jobject instance,
         jint sock) {
     klient k;
-    string data = k.recvData(sock);
+    string data = k.recvData((int) sock);
     return env->NewStringUTF(data.c_str());
 }
 }
